@@ -1,0 +1,19 @@
+name: mad_unicorn
+description: MAD UNICORN App
+
+environment:
+  sdk: '>=3.8.0 <4.0.0'
+
+dependencies:
+  flutter:
+    sdk: flutter
+  shared_preferences: ^2.2.2
+
+flutter:
+  assets:
+    - assets/comic/frame1.png
+    - assets/comic/frame2.png
+    - assets/comic/frame3.png
+    - assets/comic/frame4.png
+    - assets/comic/frame5.png
+    - assets/comic/frame6.png
