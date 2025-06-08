@@ -4,6 +4,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 // Intro & Home
 import 'pages/intro_page.dart';
 import 'pages/home_page.dart';
+import 'pages/settings_page.dart';
 
 // Mission Pages
 import 'pages/mission01_page.dart';
@@ -34,9 +35,11 @@ import 'pages/summary_dashboard.dart';
 import 'pages/storylog_page.dart';
 import 'pages/storylog_interactive_page.dart';
 
-// Utils & Globals
+// Cutscene Comic
+import 'pages/cutscene_page.dart';
+
+// Globals
 import 'utils/globals.dart';
-import 'utils/savegame_manager.dart';
 
 void main() {
   runApp(MadUnicornApp());
@@ -53,19 +56,19 @@ class _MadUnicornAppState extends State<MadUnicornApp> {
   @override
   void initState() {
     super.initState();
-    _loadAppSettings();
+    _loadSettings();
   }
 
-  Future<void> _loadAppSettings() async {
+  Future<void> _loadSettings() async {
     final prefs = await SharedPreferences.getInstance();
 
-    // Load Theme
+    // Theme
     final isDark = prefs.getBool('isDarkMode') ?? true;
     setState(() {
       _themeMode = isDark ? ThemeMode.dark : ThemeMode.light;
     });
 
-    // Load Difficulty
+    // Difficulty
     final savedDifficulty = prefs.getString('difficulty') ?? 'mittel';
     switch (savedDifficulty) {
       case 'leicht':
@@ -77,15 +80,12 @@ class _MadUnicornAppState extends State<MadUnicornApp> {
       default:
         currentDifficulty = Difficulty.mittel;
     }
-
-    // Load Game Progress
-    await SavegameManager.loadProgress();
   }
 
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'MAD UNICORN – vom Kurier zum Logistik-Milliardär',
+      title: 'MAD UNICORN - vom Kurier zum Logistik Milliardär',
       theme: ThemeData.light().copyWith(
         scaffoldBackgroundColor: Colors.white,
         primaryColor: Colors.deepPurple,
@@ -102,10 +102,14 @@ class _MadUnicornAppState extends State<MadUnicornApp> {
       ),
       themeMode: _themeMode,
       debugShowCheckedModeBanner: false,
-      initialRoute: '/',
+      initialRoute: '/cutscene',
       routes: {
         '/': (context) => IntroPage(),
         '/home': (context) => HomePage(),
+        '/settings': (context) => SettingsPage(),
+
+        // Cutscene
+        '/cutscene': (context) => CutscenePage(),
 
         // Missions
         '/mission1': (context) => Mission01Page(),
@@ -131,7 +135,7 @@ class _MadUnicornAppState extends State<MadUnicornApp> {
         '/decision9': (context) => Mission09DecisionPage(),
         '/decision10': (context) => Mission10DecisionPage(),
 
-        // Utility Pages
+        // Utilities
         '/summary': (context) => SummaryDashboard(outcome: 'Zusammenfassung wird geladen...'),
         '/storylog': (context) => StorylogPage(log: []),
         '/storylogInteractive': (context) => StorylogInteractivePage(),

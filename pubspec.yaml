@@ -10,6 +10,8 @@ dependencies:
   shared_preferences: ^2.2.2
 
 flutter:
+  uses-material-design: true
+
   assets:
     - assets/comic/frame1.png
     - assets/comic/frame2.png
@@ -17,3 +19,21 @@ flutter:
     - assets/comic/frame4.png
     - assets/comic/frame5.png
     - assets/comic/frame6.png
+    - assets/comic/page1.png
+    - assets/comic/page2.png
+    - assets/comic/page3.png
+    - assets/comic/page4.png
+    - assets/comic/page5.png
+    - assets/comic/page6.png
+    - assets/comic/page7.png
+    - assets/comic/page8.png
+    - assets/comic/page9.png
+    - assets/comic/page10.png
+    - assets/images/characters/
+    - assets/images/backgrounds/
+    - assets/images/cutscenes/
+
+  fonts:
+    - family: ComicStyle
+      fonts:
+        - asset: assets/fonts/Bangers.ttf

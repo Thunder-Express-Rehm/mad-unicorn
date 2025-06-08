@@ -1,89 +1,65 @@
-// lib/pages/home_page.dart
+// lib/pages/cutscene_page.dart
 import 'package:flutter/material.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
-class HomePage extends StatefulWidget {
+class CutscenePage extends StatefulWidget {
   @override
-  State<HomePage> createState() => _HomePageState();
+  _CutscenePageState createState() => _CutscenePageState();
 }
 
-class _HomePageState extends State<HomePage> {
-  String? _lastRoute;
+class _CutscenePageState extends State<CutscenePage> with SingleTickerProviderStateMixin {
+  final List<String> _frames = [
+    'assets/comic/frame1.png',
+    'assets/comic/frame2.png',
+    'assets/comic/frame3.png',
+    'assets/comic/frame4.png',
+    'assets/comic/frame5.png',
+    'assets/comic/frame6.png',
+  ];
 
-  @override
-  void initState() {
-    super.initState();
-    _loadLastRoute();
-  }
+  int _currentIndex = 0;
 
-  Future<void> _loadLastRoute() async {
-    final prefs = await SharedPreferences.getInstance();
-    setState(() {
-      _lastRoute = prefs.getString('lastRoute');
-    });
-  }
-
-  Future<void> _resetGame() async {
-    final prefs = await SharedPreferences.getInstance();
-    await prefs.remove('lastRoute');
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text('Spielstand wurde zurückgesetzt.')),
-    );
-    setState(() {
-      _lastRoute = null;
-    });
-  }
-
-  void _navigateTo(String route) async {
-    final prefs = await SharedPreferences.getInstance();
-    await prefs.setString('lastRoute', route);
-    Navigator.pushNamed(context, route);
+  void _nextFrame() {
+    if (_currentIndex < _frames.length - 1) {
+      setState(() => _currentIndex++);
+    } else {
+      Navigator.pushReplacementNamed(context, '/home');
+    }
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text('MAD UNICORN'),
-        centerTitle: true,
-      ),
-      body: Padding(
-        padding: const EdgeInsets.all(32.0),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
+      backgroundColor: Colors.black,
+      body: GestureDetector(
+        onTap: _nextFrame,
+        child: Stack(
           children: [
-            if (_lastRoute != null)
-              ElevatedButton.icon(
-                icon: Icon(Icons.play_arrow),
-                label: Text('Fortsetzen'),
-                onPressed: () {
-                  Navigator.pushNamed(context, _lastRoute!);
-                },
-              ),
-            SizedBox(height: 16),
-            ElevatedButton.icon(
-              icon: Icon(Icons.fiber_new),
-              label: Text('Neues Spiel starten'),
-              onPressed: () {
-                _navigateTo('/mission1');
-              },
-            ),
-            SizedBox(height: 16),
-            ElevatedButton.icon(
-              icon: Icon(Icons.restart_alt),
-              label: Text('Spiel zurücksetzen'),
-              onPressed: _resetGame,
-              style: ElevatedButton.styleFrom(
-                backgroundColor: Colors.redAccent,
+            AnimatedSwitcher(
+              duration: Duration(seconds: 1),
+              child: Image.asset(
+                _frames[_currentIndex],
+                key: ValueKey<int>(_currentIndex),
+                fit: BoxFit.cover,
+                width: double.infinity,
+                height: double.infinity,
               ),
             ),
-            SizedBox(height: 16),
-            ElevatedButton.icon(
-              icon: Icon(Icons.settings),
-              label: Text('Einstellungen'),
-              onPressed: () {
-                Navigator.pushNamed(context, '/settings');
-              },
+            Positioned(
+              bottom: 30,
+              right: 30,
+              child: ElevatedButton(
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Colors.deepPurple,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(20),
+                  ),
+                ),
+                onPressed: _nextFrame,
+                child: Text(
+                  _currentIndex < _frames.length - 1 ? "Weiter" : "Zum Spiel",
+                  style: TextStyle(fontSize: 16),
+                ),
+              ),
             ),
           ],
         ),
